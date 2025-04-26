@@ -8,6 +8,7 @@
     "opener:default",
     "positioner:default",
     "core:window:allow-set-ignore-cursor-events",
-    "fs:default"
+    "fs:default",
+    "fs:allow-applocaldata-read"
   ]
 }
