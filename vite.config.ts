@@ -30,7 +30,7 @@ export default defineConfig(async () => ({
     },
   },
   build: {
-    outDir: "../dist/",
+    outDir: "dist/",
     emptyOutDir: true,
   }
 }));
