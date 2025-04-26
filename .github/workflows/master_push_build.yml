@@ -1,0 +1,71 @@
+name: "On Push"
+
+on:
+  push:
+    branches:
+      - master # Trigger on pushes to the master branch
+
+jobs:
+  build-tauri: # Renamed job for clarity
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "windows-latest"
+            args: ""
+          # You can add other platforms here if needed, e.g.:
+          # - platform: "ubuntu-latest"
+          #   args: ""
+          # - platform: "macos-latest"
+          #   args: ""
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # Targets needed for cross-compilation on macOS if enabled
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri # Cache dependencies for the tauri part
+          cache-all-crates: true
+          cache-on-failure: true
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # Use Node.js version 20
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false # Don't run pnpm install automatically
+          version: "latest" # Use the latest pnpm version
+
+      - name: Install frontend dependencies
+        run: |
+          pnpm install # Install dependencies using pnpm
+
+      # Build the Tauri application
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tauriScript: pnpm # Specify pnpm for build commands
+          args: ${{ matrix.args }} --config src-tauri/tauri.devbuild.conf.json # Pass specific config
+
+      # Upload Windows artifacts (.exe and .msi)
+      - name: Upload Windows Artifacts
+        if: matrix.platform == 'windows-latest' # Only run this step on Windows runners
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-packages # Name of the artifact
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error # Fail if no build artifacts are found
