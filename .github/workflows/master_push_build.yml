@@ -3,8 +3,7 @@ name: "On Push"
 on:
   push:
     branches:
-      - master # Trigger on pushes to the master branch
-
+      - main
 jobs:
   build-tauri: # Renamed job for clarity
     strategy:
