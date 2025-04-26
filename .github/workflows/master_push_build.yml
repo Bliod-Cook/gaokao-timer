@@ -56,7 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tauriScript: pnpm # Specify pnpm for build commands
-          args: ${{ matrix.args }} --config src-tauri/tauri.devbuild.conf.json # Pass specific config
+          args: ${{ matrix.args }} # Pass specific config
 
       # Upload Windows artifacts (.exe and .msi)
       - name: Upload Windows Artifacts
