@@ -51,9 +51,9 @@ jobs:
           pnpm install # Install dependencies using pnpm
 
       # Build the Tauri application
-      - name: E
+      - name: Build
         run: |
-          cargo tauri build --release
+          tauri build --release
 
       # Upload Windows artifacts (.exe and .msi)
       - name: Upload Windows Artifacts
