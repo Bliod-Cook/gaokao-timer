@@ -52,11 +52,8 @@ jobs:
 
       # Build the Tauri application
       - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tauriScript: pnpm # Specify pnpm for build commands
-          args: ${{ matrix.args }} # Pass specific config
+        run: |
+          cargo tauri build --release
 
       # Upload Windows artifacts (.exe and .msi)
       - name: Upload Windows Artifacts
