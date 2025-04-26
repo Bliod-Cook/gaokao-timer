@@ -51,7 +51,7 @@ jobs:
           pnpm install # Install dependencies using pnpm
 
       # Build the Tauri application
-      - uses: tauri-apps/tauri-action@v0
+      - name: E
         run: |
           cargo tauri build --release
 
