@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import { Window } from "@tauri-apps/api/window";
+import {getCurrentWindow, Window} from "@tauri-apps/api/window";
 import { moveWindow, Position } from "@tauri-apps/plugin-positioner";
 import { readTextFile, BaseDirectory } from "@tauri-apps/plugin-fs"; // Import FS functions
 import "./App.css";
+import {TrayIcon} from "@tauri-apps/api/tray";
+import {defaultWindowIcon} from "@tauri-apps/api/app";
+import {Menu} from "@tauri-apps/api/menu/menu";
 
 // Helper function to parse YYYY/MM/DD and validate
 function parseAndValidateDate(dateStr: string): Date | null {
@@ -116,6 +119,24 @@ function App() {
         cleanupUpdate();
       }
     };
+  }, []);
+
+  useEffect(() => {
+    async function run() {
+      await TrayIcon.new({
+        icon: await defaultWindowIcon() ?? "",
+        menu: await Menu.new({
+          items: [
+            {
+              id: "quit",
+              text: "Quit",
+              action: getCurrentWindow().close,
+            }
+          ]
+        })
+      })
+    }
+    run().then()
   }, []);
 
   return (

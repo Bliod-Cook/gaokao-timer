@@ -8,6 +8,8 @@
     "opener:default",
     "positioner:default",
     "core:window:allow-set-ignore-cursor-events",
+    "core:app:allow-default-window-icon",
+    "core:window:allow-close",
     "fs:default",
     "fs:allow-applocaldata-read"
   ]
